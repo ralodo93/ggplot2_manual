@@ -67,8 +67,26 @@ print(p)
 p
 ```
 
+![001_001_scatterplot](assets/001_001_scatterplot.png "001_001")
+
 ## Personalizar un gráfico en ggplot2
 
-### Añadir capas
+En este apartado abordaremos las principales características de la visualización de datos con `ggplot2`. Para ello, se ha elaborado una serie de secciones en las que se trata de dar relevancia a cada una de ellas. Estas secciones son: cómo añadir y modificar capas, los principales objetos geométricos, escalas y colores, paneles múltiples y estilos.
+
+### Añadir y modificar capas
+
+Como hemos comentado, en `ggplot2` creamos los gráficos a partir de ir añadiendo capas. Cada capa o componente puede definir elementos muy diferentes: geometrías, estadística, escalas o estilos. Un ejemplo típico de comando de `ggplot2` sería este:
+
+```r
+library(tidyverse)
+library(palmerpenguins)
+
+penguins %>% ggplot() + # Otra forma de introducir los datos
+  geom_point(aes(x = bill_length_mm, y = bill_depth_mm)) + # Capa del objeto geométrico, indicando la capa estética
+  scale_x_continuous(trans = "log10") + # capa escala para modificar la escala del eje x
+  theme(axis.text = element_text(color = "blue")) + # capa estilo para modificar el color del texto de los ejes
+  facet_wrap(~island) + # capa multipanel
+
+```
 
 ### Principales objetos geométricos
