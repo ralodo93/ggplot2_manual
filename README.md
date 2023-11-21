@@ -125,6 +125,18 @@ p1
 
 El código completo de este apartado está en [code/002-add-modify-layers.r](code/002-add-modify-layers.r)
 
+
+# capas
+
+## stats
+## position
+## scale
+## facet
+## labels
+## estilo
+
+
+
 ### Principales objetos geométricos
 
 A continuación veremos los principales objetos geométricos que se utilizan a la hora de visualizar datos así como los parámetros que se usan y se pueden modificar en cada uno de ellos. Como hemos visto anteriormente, los objetos geométricos se llaman con la función `geom_X`. Si vemos la ayuda de cualquiera de estas funciones podremos hacernos una idea de los parámetros que se pueden modificar. Aquí tenéis el ejemplo de la función `geom_point`:
@@ -164,4 +176,91 @@ Para explicar los distintos objetos geométricos los vamos a clasificar según s
 | geom_dotplot       |           | geom_text            | geom_col                    |   |
 |       |           |            |         geom_segment           |   |
 
-Hay que tener en cuenta que las funciones se han agrupado según se suelen usar, lo cual no implica que algunas puedan usarse con otro tipo de variables distinto al referenciado en esta tabla.
+Hay que tener en cuenta que las funciones se han agrupado según se suelen usar, lo cual no implica que algunas puedan usarse con otro tipo de variables distinto al referenciado en esta tabla. Antes de comentar cada uno de los objetos geométricos vamos a ver algunos ejemplos:
+
+```r
+library(tidyverse)
+library(palmerpenguins)
+
+# Variable continua
+# eje x --> variable continua
+# eje y --> Nada - geom_histogram calcula número de ocurrencias
+p <- penguins %>% ggplot() +
+  geom_histogram(aes(bill_length_mm))
+
+# Variable discreta
+# eje x --> variable discreta
+# eje y --> Nada - geom_bar calcula número de ocurrencias
+p <- penguins %>% ggplot() +
+  geom_bar(aes(island))
+
+# 2 variables numéricas
+p <- penguins %>% ggplot() +
+  geom_point(aes(bill_length_mm,bill_depth_mm))
+
+# 2 variables: numérica + categórica
+p <- penguins %>% ggplot() +
+  geom_violin(aes(y = bill_length_mm,x = island))
+
+# 3 variables
+p <- penguins %>% group_by(year, island) %>% count() %>% ggplot() +
+  geom_tile(aes(y = year, x = island, fill = n))
+```
+
+![003_001_multi](assets/003_001_examples.png)
+
+#### Representar una variable continua
+
+Generalmente para visualizar una variable continua nos fijamos en la distribución de los valores de dicha variable. Por ejemplo, si queremos visualizar la distribución de la longitud del pico (`bill_lenght_mm`) lo haremos principalmente mediante histogramas y/o perfiles de densidad. Otras alternativas son las áreas y los gráficos de puntos (`dotplot`).
+
+##### geom_histogram
+
+Un histograma es un gráfico de barras que muestra una distribución de frecuencias. Si vemos la ayuda de esta función:
+
+```r
+geom_histogram(
+  mapping = NULL,
+  data = NULL,
+  stat = "bin",
+  position = "stack",
+  ...,
+  binwidth = NULL,
+  bins = NULL,
+  na.rm = FALSE,
+  orientation = NA,
+  show.legend = NA,
+  inherit.aes = TRUE
+)
+
+# geom_histogram() usa los siguientes "aesthetic"
+# x (variable continua)
+# y (eje y, si no se indica nada usa la función stat_bin() --> count)
+# alpha (transparencia)
+# colour/color (color de los bordes)
+# fill (color de relleno)
+# group (variable para agrupar)
+# linetype (tipo de línea para borde)
+# linewidth (tamaño del borde)
+
+# Ejemplo
+
+p <- penguins %>% ggplot() +
+  geom_histogram(aes(bill_length_mm))
+```
+
+![003_002_hist](assets/003_002_example_hist.png)
+
+Lo que se muestra en el histograma es el número de pingüinos que presentan un rango de longitud del pico. Ya que se trata de una variable continua, los rangos de longitud pueden variar y ser más pequeños o más grandes. Por defecto el número de barras es 30, tal y como se indica en el mensaje que se muestra cuando se lanza el comando. Podemos modificar o bien el número de barras o bien el tamaño de rango de las mismas con los parámetros `bins` y `binwidth` respectivamente.
+
+```r
+p <- penguins %>% ggplot() +
+  geom_histogram(aes(bill_length_mm), bins = 10) # set number of bins
+
+p <- penguins %>% ggplot() +
+  geom_histogram(aes(bill_length_mm), binwidth = 5) # set width of bins
+```
+
+![003_003_bins](assets/003_003_bins.png)
+
+A la izquierda se establece la distribución usando 10 *bins* y en la derecha se define un tamaño de 5 mm para cada *bin*.
+
