@@ -26,7 +26,7 @@ Valores de una variable numérica distribuidos entre 30 muestras de dos condicio
 
 Y mediante la visualización de dichos datos
 
-![000_ex1](assets/000_ex1.png)
+![000_ex1](assets/000_01_example.png)
 
 A simple vista, a partir de los datos de la tabla es muy complicado sacar ninguna conclusión de los mismos, sin embargo, mediante el uso de visualizaciones sencillas podemos interpretar de forma mucho más eficiente los datos de los que disponemos.
 
@@ -69,6 +69,8 @@ p
 
 ![001_001_scatterplot](assets/001_001_scatterplot.png)
 
+El código completo de este apartado está en [code/001-how-use-ggplot2.r](code/001-how-use-ggplot2.r)
+
 ## Personalizar un gráfico en ggplot2
 
 En este apartado abordaremos las principales características de la visualización de datos con `ggplot2`. Para ello, se ha elaborado una serie de secciones en las que se trata de dar relevancia a cada una de ellas. Estas secciones son: cómo añadir y modificar capas, los principales objetos geométricos, escalas y colores, paneles múltiples y estilos.
@@ -101,6 +103,7 @@ p <- penguins %>% ggplot() +
 
 p
 ```
+
 ![002_002_boxplot](assets/002_002_boxpoints.png)
 
 En la figura anterior hemos visto como colorear los puntos de un color determinado. Sin embargo, en ocasiones nos interesará colorearlos en base a alguna variable de nuestra tabla. Para ello debemos introducir el nombre de dicha variable asignándola al parámetro color, pero dentro de la estética, es decir, en la función `aes()`. La variable que se puede asignar a un color (o forma, tamaño) puede ser categórica (factor o carácter) o numérica. Vemos un ejemplo de cada una de ellas.
@@ -117,6 +120,48 @@ p1 <- penguins %>% ggplot() +
 
 p1
 ```
+
 ![002_003_multi](assets/002_003_multi.png)
 
+El código completo de este apartado está en [code/002-add-modify-layers.r](code/002-add-modify-layers.r)
+
 ### Principales objetos geométricos
+
+A continuación veremos los principales objetos geométricos que se utilizan a la hora de visualizar datos así como los parámetros que se usan y se pueden modificar en cada uno de ellos. Como hemos visto anteriormente, los objetos geométricos se llaman con la función `geom_X`. Si vemos la ayuda de cualquiera de estas funciones podremos hacernos una idea de los parámetros que se pueden modificar. Aquí tenéis el ejemplo de la función `geom_point`:
+
+```r
+geom_point(
+  mapping = NULL,
+  data = NULL,
+  stat = "identity", # indica la transformación estadística, en este caso identity
+  position = "identity", # indica el ajuste de posición, en este caso identity
+  ...,
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = TRUE
+)
+
+# geom_point() tiene los siguientes "aesthetics"
+
+# x coordenada x
+# y coordenada y
+# alpha transparencia
+# colour/color color
+# fill color de relleno
+# group grupos
+# shape forma
+# size tamaño
+# stroke tamaño borde
+```
+
+Para explicar los distintos objetos geométricos los vamos a clasificar según su uso:
+
+| 1 Variable (continua) | 1 Variable (discreta) | 2 Variables Numéricas | 2 Variables (numérica y categórica) | 3 Variables |
+| ---------------------- | ---------------------- | ---------------------- | ---------------------------------- | ------------ |
+| geom_area              | geom_bar               | geom_point             | geom_boxplot                      | geom_tile    |
+| geom_density           |               | geom_line              | geom_jitter                       |   |
+| geom_histogram         |          | geom_label              | geom_violin                       |   |
+| geom_dotplot       |           | geom_text            | geom_col                    |   |
+|       |           |            |         geom_segment           |   |
+
+Hay que tener en cuenta que las funciones se han agrupado según se suelen usar, lo cual no implica que algunas puedan usarse con otro tipo de variables distinto al referenciado en esta tabla.

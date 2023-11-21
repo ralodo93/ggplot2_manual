@@ -18,3 +18,21 @@ p <- penguins %>% ggplot() +
 
 p
 ggsave(file = "../assets/002_002_boxpoints.png",p,width = 4, height = 4, units = "in", dpi = 100)
+
+p <- penguins %>% ggplot() + 
+  geom_boxplot(aes(x = island, y = bill_depth_mm), outlier.shape = NA) +
+  geom_jitter(aes(x = island, y = bill_depth_mm, color = island)) # introducimos color en la función aes() y la asignamos a variable categórica
+
+p
+
+p1 <- penguins %>% ggplot() + 
+  geom_jitter(aes(x = island, y = bill_depth_mm, color = body_mass_g)) # introducimos color en la función aes() y la asignamos a variable numérica
+
+p1
+
+
+library(cowplot)
+
+p <- plot_grid(p,p1, nrow = 1)
+
+ggsave(file = "../assets/002_003_multi.png",p,width = 8, height = 4, units = "in", dpi = 100)
