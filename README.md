@@ -26,7 +26,7 @@ Valores de una variable numérica distribuidos entre 30 muestras de dos condicio
 
 Y mediante la visualización de dichos datos
 
-![000_ex1](assets/000_ex1.png "000_ex1")
+![000_ex1](assets/000_ex1.png)
 
 A simple vista, a partir de los datos de la tabla es muy complicado sacar ninguna conclusión de los mismos, sin embargo, mediante el uso de visualizaciones sencillas podemos interpretar de forma mucho más eficiente los datos de los que disponemos.
 
@@ -67,7 +67,7 @@ print(p)
 p
 ```
 
-![001_001_scatterplot](assets/001_001_scatterplot.png "001_001")
+![001_001_scatterplot](assets/001_001_scatterplot.png)
 
 ## Personalizar un gráfico en ggplot2
 
@@ -81,12 +81,42 @@ Como hemos comentado, en `ggplot2` creamos los gráficos a partir de ir añadien
 library(tidyverse)
 library(palmerpenguins)
 
-penguins %>% ggplot() + # Otra forma de introducir los datos
+p <- penguins %>% ggplot() + # Otra forma de introducir los datos
   geom_point(aes(x = bill_length_mm, y = bill_depth_mm)) + # Capa del objeto geométrico, indicando la capa estética
   scale_x_continuous(trans = "log10") + # capa escala para modificar la escala del eje x
   theme(axis.text = element_text(color = "blue")) + # capa estilo para modificar el color del texto de los ejes
-  facet_wrap(~island) + # capa multipanel
+  facet_wrap(~island) # capa multipanel
 
+p
 ```
+
+![002_001_scatterplot](assets/002_001_scatterplot.png)
+
+También es posible concatenar varios objetos geométricos en una misma figura, por ejemplo, vamos a hacer un boxplot sobre el cual vamos a poner los puntos. No te preocupes si hay algo que no entiendas, en el siguiente apartado veremos las principales opciones de los objetos geométricos más usados.
+
+```r
+p <- penguins %>% ggplot() + 
+  geom_boxplot(aes(x = island, y = bill_depth_mm), outlier.shape = NA) + # usamos geom_boxplot para visualizar el boxplot
+  geom_jitter(aes(x = island, y = bill_depth_mm), color = "darkred") # A continuación se introducen los puntos coloreados de rojo (el orden es importante)
+
+p
+```
+![002_002_boxplot](assets/002_002_boxpoints.png)
+
+En la figura anterior hemos visto como colorear los puntos de un color determinado. Sin embargo, en ocasiones nos interesará colorearlos en base a alguna variable de nuestra tabla. Para ello debemos introducir el nombre de dicha variable asignándola al parámetro color, pero dentro de la estética, es decir, en la función `aes()`. La variable que se puede asignar a un color (o forma, tamaño) puede ser categórica (factor o carácter) o numérica. Vemos un ejemplo de cada una de ellas.
+
+```r
+p <- penguins %>% ggplot() + 
+  geom_boxplot(aes(x = island, y = bill_depth_mm), outlier.shape = NA) +
+  geom_jitter(aes(x = island, y = bill_depth_mm, color = island)) # introducimos color en la función aes() y la asignamos a variable categórica
+
+p
+
+p1 <- penguins %>% ggplot() + 
+  geom_jitter(aes(x = island, y = bill_depth_mm, color = body_mass_g)) # introducimos color en la función aes() y la asignamos a variable numérica
+
+p1
+```
+![002_003_multi](assets/002_003_multi.png)
 
 ### Principales objetos geométricos
