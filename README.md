@@ -52,15 +52,24 @@ p <- ggplot(data = penguins)
 print(p) # Genera una figura vacía
 class(p) # [1] "gg"     "ggplot"
 
-p <- ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) # Genera figura con ejes x e y pero vacía
+# Genera figura con ejes x e y pero vacía
+p <-
+  ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm))
 print(p)
 
-p <- ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) + # Usamos el símbolo + para añadir componentes
-  geom_point() # Al introducir el objeto geométrico, genera el scatter plot
+# Usamos el símbolo + para añadir componentes
+p <-
+  ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
+  # Al introducir el objeto geométrico, genera el scatter plot
+  geom_point()
+
 print(p)
 
-p <- ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm))
-p <- p + geom_point() # También podemos añadir componentes a una variable de clase ggplot
+p <-
+  ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm))
+
+# También podemos añadir componentes a una variable de clase ggplot
+p <- p + geom_point()
 
 # Usamos print(p) o simplemente p para visualizar el gráfico
 print(p)
@@ -71,11 +80,7 @@ p
 
 El código completo de este apartado está en [code/001-how-use-ggplot2.r](code/001-how-use-ggplot2.r)
 
-## Personalizar un gráfico en ggplot2
-
-En este apartado abordaremos las principales características de la visualización de datos con `ggplot2`. Para ello, se ha elaborado una serie de secciones en las que se trata de dar relevancia a cada una de ellas. Estas secciones son: cómo añadir y modificar capas, los principales objetos geométricos, escalas y colores, paneles múltiples y estilos.
-
-### Añadir y modificar capas
+## Añadir y modificar capas
 
 Como hemos comentado, en `ggplot2` creamos los gráficos a partir de ir añadiendo capas. Cada capa o componente puede definir elementos muy diferentes: geometrías, estadística, escalas o estilos. Un ejemplo típico de comando de `ggplot2` sería este:
 
@@ -83,13 +88,16 @@ Como hemos comentado, en `ggplot2` creamos los gráficos a partir de ir añadien
 library(tidyverse)
 library(palmerpenguins)
 
-p <- penguins %>% ggplot() + # Otra forma de introducir los datos
-  geom_point(aes(x = bill_length_mm, y = bill_depth_mm)) + # Capa del objeto geométrico, indicando la capa estética
-  scale_x_continuous(trans = "log10") + # capa escala para modificar la escala del eje x
-  theme(axis.text = element_text(color = "blue")) + # capa estilo para modificar el color del texto de los ejes
-  facet_wrap(~island) # capa multipanel
-
-p
+penguins %>% ggplot() + # Otra forma de introducir los datos
+  
+  # Capa del objeto geométrico, indicando la capa estética
+  geom_point(aes(x = bill_length_mm, y = bill_depth_mm)) +
+  # capa escala para modificar la escala del eje x
+  scale_x_continuous(trans = "log10") +
+  # capa estilo para modificar el color del texto de los ejes
+  theme(axis.text = element_text(color = "blue")) +
+  # capa multipanel
+  facet_wrap( ~ island)
 ```
 
 ![002_001_scatterplot](assets/002_001_scatterplot.png)
@@ -97,11 +105,13 @@ p
 También es posible concatenar varios objetos geométricos en una misma figura, por ejemplo, vamos a hacer un boxplot sobre el cual vamos a poner los puntos. No te preocupes si hay algo que no entiendas, en el siguiente apartado veremos las principales opciones de los objetos geométricos más usados.
 
 ```r
-p <- penguins %>% ggplot() + 
-  geom_boxplot(aes(x = island, y = bill_depth_mm), outlier.shape = NA) + # usamos geom_boxplot para visualizar el boxplot
-  geom_jitter(aes(x = island, y = bill_depth_mm), color = "darkred") # A continuación se introducen los puntos coloreados de rojo (el orden es importante)
-
-p
+penguins %>% ggplot() +
+  # usamos geom_boxplot para visualizar el boxplot
+  geom_boxplot(aes(x = island, y = bill_depth_mm), outlier.shape = NA) +
+  # A continuación se introducen los puntos coloreados de rojo
+  # El orden de los objetos geométricos es importante
+  # En este caso los puntos se superponen al boxplot
+  geom_jitter(aes(x = island, y = bill_depth_mm), color = "darkred")
 ```
 
 ![002_002_boxplot](assets/002_002_boxpoints.png)
@@ -109,16 +119,14 @@ p
 En la figura anterior hemos visto como colorear los puntos de un color determinado. Sin embargo, en ocasiones nos interesará colorearlos en base a alguna variable de nuestra tabla. Para ello debemos introducir el nombre de dicha variable asignándola al parámetro color, pero dentro de la estética, es decir, en la función `aes()`. La variable que se puede asignar a un color (o forma, tamaño) puede ser categórica (factor o carácter) o numérica. Vemos un ejemplo de cada una de ellas.
 
 ```r
-p <- penguins %>% ggplot() + 
+penguins %>% ggplot() +
   geom_boxplot(aes(x = island, y = bill_depth_mm), outlier.shape = NA) +
-  geom_jitter(aes(x = island, y = bill_depth_mm, color = island)) # introducimos color en la función aes() y la asignamos a variable categórica
+  # introducimos color en la función aes() y la asignamos a variable categórica
+  geom_jitter(aes(x = island, y = bill_depth_mm, color = island))
 
-p
-
-p1 <- penguins %>% ggplot() + 
-  geom_jitter(aes(x = island, y = bill_depth_mm, color = body_mass_g)) # introducimos color en la función aes() y la asignamos a variable numérica
-
-p1
+penguins %>% ggplot() +
+  # introducimos color en la función aes() y la asignamos a variable numérica
+  geom_jitter(aes(x = island, y = bill_depth_mm, color = body_mass_g))
 ```
 
 ![002_003_multi](assets/002_003_multi.png)
@@ -126,7 +134,9 @@ p1
 El código completo de este apartado está en [code/002-add-modify-layers.r](code/002-add-modify-layers.r)
 
 
-# capas
+## Capas en ggplot2
+
+Hemos visto como añadir capas y modificar las capas a un objeto de `ggplot2`. Sin embargo debemos prestar especial atención a cuales son estas capas, para que se utilizan y como podemos modificarlas. Ya hemos hablado de las tres principales capas de `ggplot2`: datos, estética y objeto geométrico.
 
 ## stats
 ## position
